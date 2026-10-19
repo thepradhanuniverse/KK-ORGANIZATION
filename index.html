@@ -17,7 +17,12 @@ button{cursor:pointer}
 .nav-label{font-size:10px;color:#9aa9c8;letter-spacing:1.5px;padding:12px}
 .nav{width:100%;border:0;background:transparent;color:#d9e1f3;padding:12px;border-radius:9px;text-align:left;margin:3px 0}
 .nav:hover,.nav.active{background:#315efb;color:#fff}
-.nav.sub{padding-left:30px;font-size:13px}
+.nav-group{display:flex;align-items:center;justify-content:space-between}
+.nav-group .arrow{margin-left:auto;transition:transform .2s}
+.nav-group.expanded .arrow{transform:rotate(180deg)}
+.submenu{padding-left:12px;border-left:1px solid #52617b;margin-left:14px}
+.nav.sub{width:100%;font-size:12px;padding:11px 8px;margin:2px 0}
+.nav.sub.active{background:#315efb;color:white}
 .main{min-width:0;flex:1}
 .topbar{height:70px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px}
 .topbar small{color:var(--muted)}
@@ -63,18 +68,39 @@ th{background:#f7f9fd;color:#5d6980;font-size:11px;text-transform:uppercase}
   <div class="brand">KK ORGANISATION<span>MANAGEMENT PORTAL</span></div>
   <div class="nav-label">MAIN MENU</div>
   <button class="nav active" data-page="Dashboard">▦ &nbsp; Dashboard</button>
-  <button class="nav" data-page="Add New School">＋ &nbsp; Add New School</button>
-  <button class="nav" data-page="School Record">▤ &nbsp; School Record</button>
-  <button class="nav" data-page="Add New Organization">＋ &nbsp; Add New Organization</button>
-  <button class="nav" data-page="Organization Record">▤ &nbsp; Organization Record</button>
-  <button class="nav" data-page="Wallet History">◉ &nbsp; Wallet History</button>
-  <button class="nav" data-page="Emp/Staff Record">♙ &nbsp; Emp/Staff Record</button>
-  <button class="nav" data-page="Student Record">♧ &nbsp; Student Record</button>
+
+  <button class="nav nav-group" data-toggle="schoolMenu">🏫 &nbsp; School <span class="arrow">⌄</span></button>
+  <div class="submenu" id="schoolMenu" hidden>
+    <button class="nav sub" data-page="Add New School">＋ Add New School</button>
+    <button class="nav sub" data-page="School Record">▤ School Record</button>
+  </div>
+
+  <button class="nav nav-group" data-toggle="organizationMenu">🏢 &nbsp; Organization <span class="arrow">⌄</span></button>
+  <div class="submenu" id="organizationMenu" hidden>
+    <button class="nav sub" data-page="Add New Organization">＋ Add New Organization</button>
+    <button class="nav sub" data-page="Organization Record">▤ Organization Record</button>
+    <button class="nav sub" data-page="Wallet History">◉ Wallet History</button>
+  </div>
+
+  <button class="nav nav-group" data-toggle="staffMenu">♙ &nbsp; Emp/Staff <span class="arrow">⌄</span></button>
+  <div class="submenu" id="staffMenu" hidden>
+    <button class="nav sub" data-page="Emp/Staff Record">▤ Emp/Staff Record</button>
+  </div>
+
+  <button class="nav nav-group" data-toggle="studentMenu">🎓 &nbsp; Student <span class="arrow">⌄</span></button>
+  <div class="submenu" id="studentMenu" hidden>
+    <button class="nav sub" data-page="Student Record">▤ Student Record</button>
+  </div>
+
   <div class="nav-label">SETTINGS</div>
-  <button class="nav" data-page="All Passwords">▣ &nbsp; All Passwords</button>
-  <button class="nav" data-page="Change Password">⚙ &nbsp; Change Password</button>
-  <button class="nav" data-page="Login History">◷ &nbsp; Login History</button>
-  <button class="nav" data-page="Website Visit History">↗ &nbsp; Website Visit History</button>
+  <button class="nav nav-group" data-toggle="settingsMenu">⚙ &nbsp; Settings <span class="arrow">⌄</span></button>
+  <div class="submenu" id="settingsMenu" hidden>
+    <button class="nav sub" data-page="All Passwords">▣ All Passwords</button>
+    <button class="nav sub" data-page="Change Password">⚙ Change Password</button>
+    <button class="nav sub" data-page="Login History">◷ Login History</button>
+    <button class="nav sub" data-page="Website Visit History">↗ Website Visit History</button>
+  </div>
+
   <div class="nav-label">OTHER</div>
   <button class="nav" data-page="Public Website">⌂ &nbsp; Go to Website</button>
   <button class="nav" id="logoutBtn">⇥ &nbsp; Logout</button>
@@ -88,7 +114,6 @@ th{background:#f7f9fd;color:#5d6980;font-size:11px;text-transform:uppercase}
   </div>
   <div style="text-align:right"><strong>Administrator</strong><br><small>Portal Preview</small></div>
 </header>
-
 <div class="content">
 <section id="pageContent"></section>
 <div class="footer">© <span id="year"></span> KK ORGANISATION · Management Portal</div>
@@ -126,9 +151,7 @@ function tablePanel(title,key,columns){
 function rowHtml(r,i,cols,key){
  return `<tr>${cols.map(c=>`<td>${esc(r[c[0]]||"—")}</td>`).join("")}<td><button class="btn danger" onclick="deleteRecord('${key}',${i})">Delete</button></td></tr>`;
 }
-function deleteRecord(key,i){
- records[key].splice(i,1);render();toast("Record deleted.");
-}
+function deleteRecord(key,i){records[key].splice(i,1);render();toast("Record deleted.");}
 function dashboard(){
  return `<h1>Dashboard</h1><div class="muted">Welcome to KK ORGANISATION. Manage schools, organizations, staff and students from one place.</div>
  <div class="cards">
@@ -182,8 +205,9 @@ function render(){
  document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===currentPage));
  if(currentPage==="Dashboard"){pageContent.innerHTML=dashboard();return;}
  if(configs[currentPage]){
- const c=configs[currentPage];pageContent.innerHTML=`<h1>${c.title}</h1><div class="muted">Enter details below to add a new record.</div>${formPanel(c.title,c.fields)}${tablePanel("Recently Added",c.key,(listConfigs[currentPage==="Add New School"?"School Record":"Organization Record"].cols))}`;
- bindForm(c.key);bindSearch(c.key,listConfigs[currentPage==="Add New School"?"School Record":"Organization Record"].cols);return;
+ const c=configs[currentPage];const listName=currentPage==="Add New School"?"School Record":"Organization Record";
+ pageContent.innerHTML=`<h1>${c.title}</h1><div class="muted">Enter details below to add a new record.</div>${formPanel(c.title,c.fields)}${tablePanel("Recently Added",c.key,listConfigs[listName].cols)}`;
+ bindForm(c.key);bindSearch(c.key,listConfigs[listName].cols);return;
  }
  if(currentPage==="Add Staff"){
  pageContent.innerHTML=`<h1>Add Employee / Staff</h1>${formPanel("Staff Details",[field("Full Name","name","text",true),field("Employee ID","empid","text",true),field("Department","department"),field("Designation","designation"),field("Mobile Number","mobile","tel"),field("Email","email","email")])}`;
@@ -226,8 +250,20 @@ function bindSearch(key,cols){
 }
 function go(page){
  currentPage=page;render();$("#sidebar").classList.remove("open");window.scrollTo(0,0);
+ const mapping={"Add New School":"schoolMenu","School Record":"schoolMenu","Add New Organization":"organizationMenu","Organization Record":"organizationMenu","Wallet History":"organizationMenu","Emp/Staff Record":"staffMenu","Add Staff":"staffMenu","Student Record":"studentMenu","Add Student":"studentMenu","All Passwords":"settingsMenu","Change Password":"settingsMenu","Login History":"settingsMenu","Website Visit History":"settingsMenu"};
+ const target=mapping[page];
+ if(target){document.getElementById(target).hidden=false;document.querySelector(`[data-toggle="${target}"]`).classList.add("expanded");}
 }
 document.querySelectorAll(".nav[data-page]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+document.querySelectorAll("[data-toggle]").forEach(button=>{
+ button.addEventListener("click",()=>{
+  const menu=document.getElementById(button.dataset.toggle);
+  const isOpening=menu.hidden;
+  document.querySelectorAll(".submenu").forEach(item=>item.hidden=true);
+  document.querySelectorAll(".nav-group").forEach(item=>item.classList.remove("expanded"));
+  if(isOpening){menu.hidden=false;button.classList.add("expanded");}
+ });
+});
 $("#menuBtn").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
 $("#logoutBtn").addEventListener("click",()=>{go("Dashboard");toast("This preview has no real login session to end.");});
 $("#year").textContent=new Date().getFullYear();
