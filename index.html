@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KK ORGANISATION | Management Portal</title>
+<style>
+:root{--navy:#14233f;--blue:#315efb;--bg:#f4f7fc;--text:#202b40;--muted:#748097;--line:#e7ebf3}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:250px;background:var(--navy);color:white;padding:22px 14px;flex-shrink:0}
+.brand{font-size:20px;font-weight:800;padding:8px 10px 25px;line-height:1.5}
+.brand span{display:block;color:#aebeff;font-size:11px;letter-spacing:2px}
+.nav-label{font-size:10px;color:#9aa9c8;letter-spacing:1.5px;padding:12px}
+.nav{width:100%;border:0;background:transparent;color:#d9e1f3;padding:12px;border-radius:9px;text-align:left;margin:3px 0}
+.nav:hover,.nav.active{background:#315efb;color:#fff}
+.nav.sub{padding-left:30px;font-size:13px}
+.main{min-width:0;flex:1}
+.topbar{height:70px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px}
+.topbar small{color:var(--muted)}
+.menu-btn{display:none;border:0;background:white;font-size:22px}
+.content{padding:28px;max-width:1500px;margin:auto}
+h1{font-size:25px;margin:0 0 8px}
+h2{font-size:17px;margin:0 0 18px}
+.muted{color:var(--muted);font-size:13px;line-height:1.6}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:25px 0}
+.card,.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:0 4px 16px #1d315008}
+.card .label{font-size:13px;color:var(--muted)}
+.card .number{font-size:29px;font-weight:800;margin-top:14px}
+.card .icon{float:right;background:#eef2ff;border-radius:10px;padding:10px}
+.panel{margin-top:20px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.btn{border:0;border-radius:8px;background:var(--blue);color:white;padding:11px 15px;font-weight:700}
+.btn.secondary{background:#edf1ff;color:#254bd0}
+.btn.dark{background:var(--navy)}
+.btn.danger{background:#fff0f0;color:#c33131}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.field label{display:block;font-size:12px;font-weight:700;margin-bottom:7px}
+.field input,.field select,.field textarea,.search{width:100%;padding:12px;border:1px solid #dce2ed;border-radius:8px;background:white;outline:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue)}
+.field.full{grid-column:1/-1}
+.actions{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;white-space:nowrap}
+th,td{padding:13px 12px;text-align:left;border-bottom:1px solid var(--line)}
+th{background:#f7f9fd;color:#5d6980;font-size:11px;text-transform:uppercase}
+.empty{text-align:center;color:var(--muted);padding:28px}
+.tag{display:inline-block;padding:5px 9px;background:#edf7ef;color:#267b42;border-radius:20px;font-size:11px}
+.notice{padding:12px 14px;background:#fff8e8;border:1px solid #f4e4b8;color:#7d5a14;border-radius:9px;font-size:12px;line-height:1.6;margin-top:16px}
+.hidden{display:none!important}
+.footer{text-align:center;color:var(--muted);font-size:12px;padding:28px}
+#toast{position:fixed;bottom:22px;right:22px;background:#172844;color:white;padding:14px 18px;border-radius:10px;display:none;z-index:10;max-width:90%}
+@media(max-width:900px){.sidebar{width:220px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding:20px}}
+@media(max-width:650px){.sidebar{position:fixed;z-index:5;left:-260px;top:0;bottom:0;transition:.2s;overflow-y:auto}.sidebar.open{left:0}.menu-btn{display:block}.topbar{padding:0 15px}.content{padding:17px}.cards{gap:10px}.card{padding:14px}.card .number{font-size:24px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar" id="sidebar">
+  <div class="brand">KK ORGANISATION<span>MANAGEMENT PORTAL</span></div>
+  <div class="nav-label">MAIN MENU</div>
+  <button class="nav active" data-page="Dashboard">▦ &nbsp; Dashboard</button>
+  <button class="nav" data-page="Add New School">＋ &nbsp; Add New School</button>
+  <button class="nav" data-page="School Record">▤ &nbsp; School Record</button>
+  <button class="nav" data-page="Add New Organization">＋ &nbsp; Add New Organization</button>
+  <button class="nav" data-page="Organization Record">▤ &nbsp; Organization Record</button>
+  <button class="nav" data-page="Wallet History">◉ &nbsp; Wallet History</button>
+  <button class="nav" data-page="Emp/Staff Record">♙ &nbsp; Emp/Staff Record</button>
+  <button class="nav" data-page="Student Record">♧ &nbsp; Student Record</button>
+  <div class="nav-label">SETTINGS</div>
+  <button class="nav" data-page="All Passwords">▣ &nbsp; All Passwords</button>
+  <button class="nav" data-page="Change Password">⚙ &nbsp; Change Password</button>
+  <button class="nav" data-page="Login History">◷ &nbsp; Login History</button>
+  <button class="nav" data-page="Website Visit History">↗ &nbsp; Website Visit History</button>
+  <div class="nav-label">OTHER</div>
+  <button class="nav" data-page="Public Website">⌂ &nbsp; Go to Website</button>
+  <button class="nav" id="logoutBtn">⇥ &nbsp; Logout</button>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="menu-btn" id="menuBtn">☰</button>
+    <div><strong id="topTitle">Dashboard</strong><br><small>KK ORGANISATION</small></div>
+  </div>
+  <div style="text-align:right"><strong>Administrator</strong><br><small>Portal Preview</small></div>
+</header>
+
+<div class="content">
+<section id="pageContent"></section>
+<div class="footer">© <span id="year"></span> KK ORGANISATION · Management Portal</div>
+</div>
+</main>
+</div>
+<div id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const pageContent=$("#pageContent");
+let currentPage="Dashboard";
+let records={schools:[],organizations:[],staff:[],students:[],wallet:[],logins:[],visits:[]};
+
+function toast(msg){
+ const t=$("#toast");t.textContent=msg;t.style.display="block";
+ clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display="none",3000);
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function field(label,name,type="text",required=false,options=[]){
+ let control=type==="select"
+ ?`<select name="${name}" ${required?"required":""}><option value="">Select ${label}</option>${options.map(o=>`<option>${esc(o)}</option>`).join("")}</select>`
+ :type==="textarea"
+ ?`<textarea name="${name}" rows="3" ${required?"required":""}></textarea>`
+ :`<input name="${name}" type="${type}" ${required?"required":""}>`;
+ return `<div class="field"><label>${label}${required?" *":""}</label>${control}</div>`;
+}
+function formPanel(title,fields,submitLabel="Save Record"){
+ return `<div class="panel"><h2>${title}</h2><form id="recordForm"><div class="form-grid">${fields.join("")}</div><div class="actions"><button class="btn" type="submit">${submitLabel}</button><button class="btn secondary" type="reset">Reset</button></div></form></div>`;
+}
+function tablePanel(title,key,columns){
+ const rows=records[key]||[];
+ return `<div class="panel"><div class="panel-head"><h2>${title}</h2><input class="search" id="tableSearch" placeholder="Search records..." style="max-width:250px"></div><div class="table-wrap"><table><thead><tr>${columns.map(c=>`<th>${c[1]}</th>`).join("")}<th>Action</th></tr></thead><tbody id="tableBody">${rows.length?rows.map((r,i)=>rowHtml(r,i,columns,key)).join(""):`<tr><td colspan="${columns.length+1}" class="empty">No records yet. Add a record to see it here.</td></tr>`}</tbody></table></div></div>`;
+}
+function rowHtml(r,i,cols,key){
+ return `<tr>${cols.map(c=>`<td>${esc(r[c[0]]||"—")}</td>`).join("")}<td><button class="btn danger" onclick="deleteRecord('${key}',${i})">Delete</button></td></tr>`;
+}
+function deleteRecord(key,i){
+ records[key].splice(i,1);render();toast("Record deleted.");
+}
+function dashboard(){
+ return `<h1>Dashboard</h1><div class="muted">Welcome to KK ORGANISATION. Manage schools, organizations, staff and students from one place.</div>
+ <div class="cards">
+ ${[['Schools',records.schools.length,'🏫'],['Organizations',records.organizations.length,'🏢'],['Staff Members',records.staff.length,'👥'],['Students',records.students.length,'🎓']].map(x=>`<div class="card"><span class="icon">${x[2]}</span><div class="label">${x[0]}</div><div class="number">${x[1]}</div></div>`).join("")}
+ </div>
+ <div class="panel"><div class="panel-head"><h2>Quick Actions</h2></div><div class="actions">
+ <button class="btn" onclick="go('Add New School')">＋ Add New School</button>
+ <button class="btn" onclick="go('Add New Organization')">＋ Add Organization</button>
+ <button class="btn secondary" onclick="go('Student Record')">View Students</button>
+ <button class="btn secondary" onclick="go('Emp/Staff Record')">View Staff</button>
+ </div></div>
+ <div class="notice">Prototype mode: records currently stay in this browser session only. This preview does not yet have secure administrator login, a shared database, or permanent storage.</div>`;
+}
+const configs={
+"Add New School":{key:"schools",title:"Add New School",fields:[
+field("Organization Type","type","select",true,["School","College","Institute","Other"]),
+field("Organization / School Name","name","text",true),
+field("Owner / Contact Name","owner","text",true),
+field("Mobile Number","mobile","tel",true),
+field("Alternate Contact","alternate","tel"),
+field("Email Address","email","email"),
+field("State / Region","state"),
+field("District","district"),
+field("PIN Code","pincode","text"),
+field("Staff / Student Type","userType","select",true,["Both","Staff","Student"]),
+field("Full Address","address","textarea")
+]},
+"Add New Organization":{key:"organizations",title:"Add New Organization",fields:[
+field("Organization Name","name","text",true),
+field("Organization Type","type","select",true,["School","College","Institute","Company","Other"]),
+field("Owner / Contact Name","owner","text",true),
+field("Mobile Number","mobile","tel",true),
+field("Email Address","email","email"),
+field("State / Region","state"),
+field("District","district"),
+field("PIN Code","pincode"),
+field("Address","address","textarea")
+]}
+};
+const listConfigs={
+"School Record":{key:"schools",title:"School Records",cols:[["name","School Name"],["type","Type"],["owner","Contact"],["mobile","Mobile"],["district","District"]]},
+"Organization Record":{key:"organizations",title:"Organization Records",cols:[["name","Organization"],["type","Type"],["owner","Contact"],["mobile","Mobile"],["district","District"]]},
+"Emp/Staff Record":{key:"staff",title:"Employee / Staff Records",cols:[["name","Name"],["empid","Employee ID"],["department","Department"],["designation","Designation"],["mobile","Mobile"]]},
+"Student Record":{key:"students",title:"Student Records",cols:[["name","Name"],["studentid","Student ID"],["class","Class"],["course","Course"],["mobile","Mobile"]]},
+"Wallet History":{key:"wallet",title:"Wallet History",cols:[["amount","Amount"],["type","Type"],["balance","Balance"],["date","Date"],["userId","User ID"],["organization","Organization"],["remark","Remark"]]},
+"Login History":{key:"logins",title:"Login History",cols:[["user","User"],["date","Date"],["status","Status"]]},
+"Website Visit History":{key:"visits",title:"Website Visit History",cols:[["page","Page"],["date","Date"],["note","Details"]]}
+};
+function render(){
+ $("#topTitle").textContent=currentPage;
+ document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===currentPage));
+ if(currentPage==="Dashboard"){pageContent.innerHTML=dashboard();return;}
+ if(configs[currentPage]){
+ const c=configs[currentPage];pageContent.innerHTML=`<h1>${c.title}</h1><div class="muted">Enter details below to add a new record.</div>${formPanel(c.title,c.fields)}${tablePanel("Recently Added",c.key,(listConfigs[currentPage==="Add New School"?"School Record":"Organization Record"].cols))}`;
+ bindForm(c.key);bindSearch(c.key,listConfigs[currentPage==="Add New School"?"School Record":"Organization Record"].cols);return;
+ }
+ if(currentPage==="Add Staff"){
+ pageContent.innerHTML=`<h1>Add Employee / Staff</h1>${formPanel("Staff Details",[field("Full Name","name","text",true),field("Employee ID","empid","text",true),field("Department","department"),field("Designation","designation"),field("Mobile Number","mobile","tel"),field("Email","email","email")])}`;
+ bindForm("staff");return;
+ }
+ if(currentPage==="Add Student"){
+ pageContent.innerHTML=`<h1>Add Student</h1>${formPanel("Student Details",[field("Full Name","name","text",true),field("Student ID","studentid","text",true),field("Class","class"),field("Course","course"),field("Section","section"),field("Father's Name","father"),field("Mobile Number","mobile","tel"),field("Address","address","textarea")])}`;
+ bindForm("students");return;
+ }
+ if(listConfigs[currentPage]){
+ const c=listConfigs[currentPage];pageContent.innerHTML=`<h1>${c.title}</h1><div class="muted">Search and manage available records.</div>${tablePanel(c.title,c.key,c.cols)}${currentPage==="Emp/Staff Record"||currentPage==="Student Record"?`<div class="actions"><button class="btn" onclick="go('${currentPage==="Emp/Staff Record"?"Add Staff":"Add Student"}')">＋ Add New</button></div>`:""}`;
+ bindSearch(c.key,c.cols);return;
+ }
+ if(currentPage==="All Passwords"){
+ pageContent.innerHTML=`<h1>Account Management</h1><div class="panel"><h2>Secure Account Management</h2><p class="muted">For security, this portal does not display stored passwords. In the full version, accounts should be managed through secure password reset and role-based access.</p><button class="btn" onclick="toast('Secure account backend is not connected yet.')">Manage Accounts</button></div>`;return;
+ }
+ if(currentPage==="Change Password"){
+ pageContent.innerHTML=`<h1>Change Password</h1><div class="panel"><p class="muted">Password changes require a secure authentication backend. This demo does not collect or save real passwords.</p><div class="notice">Connect a secure authentication service before using this feature for real accounts.</div></div>`;return;
+ }
+ if(currentPage==="Public Website"){
+ pageContent.innerHTML=`<h1>KK ORGANISATION</h1><div class="panel"><h2>Welcome to KK ORGANISATION</h2><p class="muted">A simple platform for organization, school, staff and student management.</p><button class="btn" onclick="go('Dashboard')">Return to Dashboard</button></div>`;return;
+ }
+ pageContent.innerHTML=`<h1>${esc(currentPage)}</h1><div class="panel"><p class="muted">This feature will be connected in the next development stage.</p></div>`;
+}
+function bindForm(key){
+ const form=$("#recordForm");if(!form)return;
+ form.addEventListener("submit",e=>{
+ e.preventDefault();const data=Object.fromEntries(new FormData(form).entries());
+ if(!records[key])records[key]=[];
+ records[key].push(data);render();toast("Record added successfully.");
+ });
+}
+function bindSearch(key,cols){
+ const input=$("#tableSearch");if(!input)return;
+ input.addEventListener("input",()=>{
+ const q=input.value.toLowerCase();
+ const rows=(records[key]||[]).filter(r=>cols.some(c=>String(r[c[0]]||"").toLowerCase().includes(q)));
+ $("#tableBody").innerHTML=rows.length?rows.map(r=>`<tr>${cols.map(c=>`<td>${esc(r[c[0]]||"—")}</td>`).join("")}<td><span class="tag">Saved in preview</span></td></tr>`).join(""):`<tr><td colspan="${cols.length+1}" class="empty">No matching records</td></tr>`;
+ });
+}
+function go(page){
+ currentPage=page;render();$("#sidebar").classList.remove("open");window.scrollTo(0,0);
+}
+document.querySelectorAll(".nav[data-page]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page)));
+$("#menuBtn").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
+$("#logoutBtn").addEventListener("click",()=>{go("Dashboard");toast("This preview has no real login session to end.");});
+$("#year").textContent=new Date().getFullYear();
+render();
+</script>
+</body>
+</html>
